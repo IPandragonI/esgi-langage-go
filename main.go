@@ -46,5 +46,8 @@ func main() {
 }
 
 func calculImc(poids, taille float64) float64 {
+	if taille == 0 {
+		return 0
+	}
 	return poids / (taille * taille)
 }
