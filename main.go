@@ -5,49 +5,69 @@ import (
 )
 
 func main() {
-	const prenom = "Mathys"
-	var poids float64
-	var taille float64
+	var a, b float64
+	var op string
 
-	const (
-		IMCMaigreur = 18.5
-		IMCNormal   = 25.0
-		IMCSurpoids = 30.0
-	)
+	fmt.Println("--- Calculatrice ---")
 
-	// On demande à l'utilisateur de renseigner son poids et sa taille
-	fmt.Print("Entrez votre poids (en kg, ex: 70.5) : ")
-	_, err := fmt.Scanln(&poids)
-	if err != nil {
-		return
-	}
+	// Boucle 'while true'
+	for {
+		fmt.Print("\nEntrez un calcul (Synthaxe : a, opération, b séparées par un ENTRER) : ")
 
-	fmt.Print("Entrez votre taille (en m, ex: 1.75) : ")
-	_, err = fmt.Scanln(&taille)
-	if err != nil {
-		return
-	}
+		_, err := fmt.Scan(&a, &op, &b)
+		if err != nil {
+			fmt.Println("Erreur de lecture :", err)
+			return
+		}
 
-	imc := calculImc(poids, taille)
+		resultat, err := operer(a, b, op)
+		if err != nil {
+			fmt.Printf("Erreur : %v\n", err)
+			continue
+		}
 
-	fmt.Printf("\nBonjour %s, votre IMC est de : %.2f\n", prenom, imc)
-
-	// On affiche la catégorie de poids en fonction de l'imc calculé
-	switch {
-	case imc < IMCMaigreur:
-		fmt.Println("Catégorie : Maigreur")
-	case imc < IMCNormal:
-		fmt.Println("Catégorie : Normal")
-	case imc < IMCSurpoids:
-		fmt.Println("Catégorie : Surpoids")
-	default:
-		fmt.Println("Catégorie : Obésité")
+		fmt.Printf("Résultat (via operer) : %.2f\n", resultat)
+		fn := creerOperation(op)
+		fmt.Printf("Résultat (via closure) : %.2f\n", fn(a, b))
 	}
 }
 
-func calculImc(poids float64, taille float64) float64 {
-	if taille == 0 {
-		return 0
+// Fonction operer
+func operer(a, b float64, op string) (float64, error) {
+	switch op {
+	case "+":
+		return a + b, nil
+	case "-":
+		return a - b, nil
+	case "*":
+		return a * b, nil
+	case "/":
+		if b == 0 {
+			return 0, fmt.Errorf("division par 0 impossible")
+		}
+		return a / b, nil
+	default:
+		return 0, fmt.Errorf("opérateur inconnu '%s'", op)
 	}
-	return poids / (taille * taille)
+}
+
+// Fonction creerOperation
+func creerOperation(op string) func(float64, float64) float64 {
+	switch op {
+	case "+":
+		return func(a, b float64) float64 { return a + b }
+	case "-":
+		return func(a, b float64) float64 { return a - b }
+	case "*":
+		return func(a, b float64) float64 { return a * b }
+	case "/":
+		return func(a, b float64) float64 {
+			if b == 0 {
+				panic("division par 0")
+			}
+			return a / b
+		}
+	default:
+		panic("opérateur inconnu")
+	}
 }
