@@ -45,7 +45,7 @@ func main() {
 	}
 }
 
-func calculImc(poids, taille float64) float64 {
+func calculImc(poids float64, taille float64) float64 {
 	if taille == 0 {
 		return 0
 	}
