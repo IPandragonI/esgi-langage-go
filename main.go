@@ -5,7 +5,7 @@ import (
 )
 
 func main() {
-	const prenomConst = "Mathys"
+	const prenom = "Mathys"
 	var poids float64
 	var taille float64
 
@@ -28,8 +28,9 @@ func main() {
 		return
 	}
 
-	imc := poids / (taille * taille)
-	fmt.Printf("\nBonjour %s, votre IMC est de : %.2f\n", prenomConst, imc)
+	imc := calculImc(poids, taille)
+
+	fmt.Printf("\nBonjour %s, votre IMC est de : %.2f\n", prenom, imc)
 
 	// On affiche la catégorie de poids en fonction de l'imc calculé
 	switch {
@@ -42,4 +43,8 @@ func main() {
 	default:
 		fmt.Println("Catégorie : Obésité")
 	}
+}
+
+func calculImc(poids, taille float64) float64 {
+	return poids / (taille * taille)
 }
